@@ -23,15 +23,15 @@ int main(void) {
 		printf("Sniffing on device %s\n",device);
 
 		pcap_handle = pcap_open_live(device, 4096, 1, 0, errbuf);
-		if(pcap_handle = NULL)
+		if(pcap_handle == NULL)
 				pcap_fatal("pcap_open_live", errbuf);
 
-		pcap_loop(pcap_handle, 3 caught_packet, NULL);
+		pcap_loop(pcap_handle, 3, caught_packet, NULL);
 		pcap_close(pcap_handle);
 }
 
 void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, const u_char *packet) {
-		int tcp_header_length, total_header_size, pk_data_len;
+		int tcp_header_length, total_header_size, pkt_data_len;
 		u_char *pkt_data;
 		printf("==== Got a %d byte packet ====\n", cap_header->len);
 
@@ -41,9 +41,9 @@ void caught_packet(u_char *user_args, const struct pcap_pkthdr *cap_header, cons
 
 		tcp_header_length = decode_tcp(packet+ETHER_HDR_LEN+sizeof(struct ip_hdr));
 		
-		tcp_header_size = ETHER_HDR_LEN + sizeof(struct ip_hdr) + tcp_header_length;
+		tcp_header_length = ETHER_HDR_LEN + sizeof(struct ip_hdr) + tcp_header_length;
 
-		pkd_data = (u_char *)packet + total_header_size; // pkt_data points to the data portion
+		pkt_data = (u_char *)packet + total_header_size; // pkt_data points to the data portion
 
 		pkt_data_len = cap_header->len - total_header_size;
 
